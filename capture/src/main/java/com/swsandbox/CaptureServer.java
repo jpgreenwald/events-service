@@ -57,7 +57,7 @@ public class CaptureServer extends AbstractHandler
 
         // HTTP connector
         ServerConnector http = new ServerConnector(server);
-        http.setHost("localhost");
+        //http.setHost("localhost");
         http.setPort(5050);
         http.setIdleTimeout(30000);
 

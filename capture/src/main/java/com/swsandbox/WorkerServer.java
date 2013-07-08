@@ -35,13 +35,13 @@ public class WorkerServer
         {
             c++;
             String msg = socket.recvStr();
-            logger.info("msg={}", msg);
+//            logger.info("msg={}", msg);
 
             BoundStatement boundInsertStatement = new BoundStatement(insertStatement);
             boundInsertStatement.bind(UUIDs.timeBased(), msg);
             client.getSession().execute(boundInsertStatement);
 
-            logger.info("done with msg");
+//            logger.info("done with msg");
 
             if (c % 1000 == 0)
             {
