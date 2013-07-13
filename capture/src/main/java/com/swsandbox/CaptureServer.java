@@ -19,16 +19,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * User: jgreenwald
  * Date: 7/7/13
  * Time: 12:56 PM
  */
-public class PooledCaptureServer extends AbstractHandler
+public class CaptureServer extends AbstractHandler
 {
-    private static final Logger logger = LoggerFactory.getLogger(PooledCaptureServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(CaptureServer.class);
     private static Configuration configuration;
     private static ZMQ.Context context;
     private static SimplePool<ZMQ.Socket> pool;
@@ -51,7 +50,7 @@ public class PooledCaptureServer extends AbstractHandler
         http.setPort(configuration.getInteger(ConfigurationProperties.http_port));
         http.setIdleTimeout(configuration.getInteger(ConfigurationProperties.http_idle_timeout));
         server.addConnector(http);
-        server.setHandler(new PooledCaptureServer());
+        server.setHandler(new CaptureServer());
         server.start();
         server.join();
     }
