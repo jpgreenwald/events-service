@@ -23,6 +23,11 @@ public class CassandraClient
         connect("127.0.0.1");
     }
 
+    public CassandraClient(String destination)
+    {
+        connect(destination);
+    }
+
     public void connect(String node)
     {
         cluster = Cluster.builder().addContactPoint(node).build();

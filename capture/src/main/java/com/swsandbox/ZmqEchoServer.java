@@ -1,8 +1,11 @@
 package com.swsandbox;
 
+import com.swsandbox.util.Configuration;
+import com.swsandbox.util.ConfigurationProperties;
 import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.security.krb5.Config;
 
 /**
  * User: jgreenwald
@@ -15,9 +18,10 @@ public class ZmqEchoServer
 
     public static void main(String[] args)
     {
-        ZMQ.Context context = ZMQ.context(5);
+        Configuration configuration = new Configuration(args);
+        ZMQ.Context context = ZMQ.context(configuration.getInteger(ConfigurationProperties.num_of_context_threads));
         ZMQ.Socket socket = context.socket(ZMQ.PULL);
-        socket.bind("tcp://*:5100");
+        socket.bind(configuration.getString(ConfigurationProperties.worker_socket_host));
 
         logger.info("listening...");
         int c = 0;
@@ -25,9 +29,9 @@ public class ZmqEchoServer
         {
             c++;
             String msg = socket.recvStr();
-            if (c % 1000 == 0)
+            if (c % configuration.getInteger(ConfigurationProperties.echo_count) == 0)
             {
-                logger.info("1000 msgs received");
+                logger.info("{} messages received", configuration.getInteger(ConfigurationProperties.echo_count));
             }
         }
     }

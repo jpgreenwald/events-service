@@ -1,5 +1,7 @@
 package com.swsandbox;
 
+import com.swsandbox.util.Configuration;
+import com.swsandbox.util.ConfigurationProperties;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -20,17 +22,13 @@ public class HealthServer extends AbstractHandler
 
     public static void main(String[] args) throws Exception
     {
+        Configuration configuration = new Configuration(args);
         Server server = new Server();
-        // HTTP connector
         ServerConnector http = new ServerConnector(server);
-        //http.setHost("localhost");
-        http.setPort(5050);
-        http.setIdleTimeout(30000);
-
-        // Set the connector
+        http.setPort(configuration.getInteger(ConfigurationProperties.http_port));
+        http.setIdleTimeout(configuration.getInteger(ConfigurationProperties.http_idle_timeout));
         server.addConnector(http);
-
-        server.setHandler(new CaptureServer());
+        server.setHandler(new HealthServer());
         server.start();
     }
 
