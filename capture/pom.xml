@@ -64,7 +64,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.swsandbox.CaptureServer</mainClass>
+                            <mainClass>com.swsandbox.Help</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
