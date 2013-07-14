@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.js"></script>
+    <script src="js/smoothie.js"></script>
+    <title>Metrics</title>
+</head>
+<body>
+
+<div>
+    <canvas id="smoothie-chart" width="815" height="212">
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+
+<script type="text/javascript">
+    var chart = new SmoothieChart({
+                        millisPerPixel: 100,
+                        grid: {
+                            fillStyle: '#ffffff',
+                            strokeStyle: 'rgba(119,119,119,0.11)',
+                            millisPerLine: 10000, verticalSections: 0
+                        },
+                        labels: {
+                            fillStyle: '#000000',
+                            disabled: true
+                        },
+                        timestampFormatter: SmoothieChart.timeFormatter
+                    }
+            ),
+            canvas = document.getElementById('smoothie-chart'),
+            series = new TimeSeries();
+
+    chart.addTimeSeries(series, {
+        lineWidth: 0.9, strokeStyle: '#001773'
+    });
+    chart.streamTo(canvas, 974);
+
+    var newData = false;
+
+    setInterval(function () {
+        if (!newData) {
+            console.log("timeout hit with no data");
+            series.append(new Date().getTime(), 0);
+        }
+        else {
+            console.log("data found");
+        }
+        newData = false;
+    }, 5000);
+
+    var socket = io.connect('http://localhost:8070');
+
+    socket.on('pushdata', function (data) {
+        series.append(new Date().getTime(), data);
+        newData = true;
+    });
+
+</script>
+
+</body>
+</html>
