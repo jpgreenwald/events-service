@@ -22,26 +22,21 @@ for (var i = 0; i < 10; i++) {
 var lastSecond = null;
 
 var zmq = require('zmq');
-var sock = zmq.socket('pull');
+var sock = zmq.socket('sub');
+sock.subscribe("");
+sock.connect("host");
+//sock.bindSync('tcp://*:5300');
+console.log('Consumer bound to port 5300');
 
-sock.bindSync('tcp://127.0.0.1:5200');
-console.log('Consumer bound to port 5200');
+var lastMa = null;
 
 io.sockets.on('connection', function (socket) {
-    setInterval(function () {
-        var j = 0;
-        for (var i = 0; i < timeData.length; i++) {
-            j += timeData[i];
-        }
-        var ma = j !== 0 ? Math.ceil(j / timeData.length) : 0;
-        console.log("sending ma: " + ma);
-        io.sockets.emit('pushdata', ma);
-    }, 1000);
+
 });
 
 sock.on('message', function (msg) {
     var jsonData = JSON.parse(msg);
-    if (jsonData.type === 'metric' && jsonData.subType == 'login_event') {
+    //if (jsonData.type === 'metric' && jsonData.subType == 'login_event') {
         var data = jsonData.data;
         if (data !== null && data !== undefined) {
 
@@ -65,11 +60,27 @@ sock.on('message', function (msg) {
             timeData[index]++;
             lastSecond = second;
         }
-    }
-    else {
-        console.log("no equal");
-    }
+//    }
+//    else {
+//        console.log("no equal");
+//    }
 });
+
+setInterval(function () {
+    var j = 0;
+    for (var i = 0; i < timeData.length; i++) {
+        j += timeData[i];
+    }
+    var ma = j !== 0 ? Math.ceil(j / timeData.length) : 0;
+    if (lastMa == null)
+    {
+        console.log("setting first lastMa to: " + ma);
+        lastMa = ma;
+    }
+    lastMa = ((lastMa * .1) + (ma *.9));
+    console.log("sending ma: " + ma + " vs lastMa:" + lastMa);
+    io.sockets.emit('pushdata', lastMa);
+}, 1500);
 
 server.listen(8070);
 console.log('Server is listening on port 8070...');

@@ -10,7 +10,7 @@
 <body>
 
 <div>
-    <canvas id="smoothie-chart" width="815" height="212">
+    <canvas id="smoothie-chart" width="1024" height="600">
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -26,7 +26,7 @@
                         },
                         labels: {
                             fillStyle: '#000000',
-                            disabled: true
+                            disabled: false
                         },
                         timestampFormatter: SmoothieChart.timeFormatter
                     }
@@ -35,9 +35,9 @@
             series = new TimeSeries();
 
     chart.addTimeSeries(series, {
-        lineWidth: 0.9, strokeStyle: '#001773'
+        lineWidth: 0.7, strokeStyle: '#001773'
     });
-    chart.streamTo(canvas, 974);
+    chart.streamTo(canvas, 1400);
 
     var newData = false;
 
@@ -52,7 +52,7 @@
         newData = false;
     }, 5000);
 
-    var socket = io.connect('http://localhost:8070');
+    var socket = io.connect('http://10.3.224.41:8070');
 
     socket.on('pushdata', function (data) {
         series.append(new Date().getTime(), data);
